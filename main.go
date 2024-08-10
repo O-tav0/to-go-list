@@ -1,7 +1,11 @@
+/*
+Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+
+*/
 package main
 
-import "fmt"
+import "to-go-list/cmd"
 
 func main() {
-	fmt.Println("Hello World!")
+	cmd.Execute()
 }
