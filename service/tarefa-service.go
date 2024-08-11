@@ -16,16 +16,19 @@ func AdicionarTarefa(descricao string) {
 }
 
 func ListarTarefasPendentes() {
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 0, ' ', tabwriter.AlignRight|tabwriter.Debug)
-
+	writer := getConfigTabWriter();
 	registros := data.BuscarTarefasPendentes();
 
-	w.Write([]byte("\tID\tDescrição\tEstá Completa\tCriada Em\t\n"))
 	for i := 0; i < len(registros); i++ {
-		w.Write(getLinhaOutput(registros[i]))
+		writer.Write(getLinhaOutput(registros[i]))
 	}
+	writer.Flush()
+}
 
-	w.Flush()
+func getConfigTabWriter() *tabwriter.Writer {
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 0, ' ', tabwriter.AlignRight|tabwriter.Debug)
+	w.Write([]byte("\tID\tDescrição\tEstá Completa\tCriada Em\t\n"))
+	return w
 }
 
 func getLinhaOutput(registro []string) []byte {
