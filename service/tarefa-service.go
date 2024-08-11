@@ -14,7 +14,7 @@ const caminho_arquivo_dados = "C:/GO/to-go-list/data/dados.csv";
 func AdicionarTarefa(descricao string) {
 	dados := getArquivoCsv();
 	csvWriter := csv.NewWriter(dados)
-	novaTarefa := preencherNovaTarefaStruct(descricao)
+	novaTarefa := preencherNovaTarefaStruct(descricao, dados)
 
 	csvWriter.Write([]string {
 		strconv.Itoa(novaTarefa.Id),
@@ -37,8 +37,7 @@ func getArquivoCsv() *os.File {
 	return file
 }
 
-func getProximoIdRegistro() string {
-	arquivoDados := getArquivoCsv();
+func getProximoIdRegistro(arquivoDados *os.File) string {
 	csvReader := csv.NewReader(arquivoDados)
 
 	registros, err := csvReader.ReadAll()
@@ -56,8 +55,8 @@ func getProximoIdRegistro() string {
 	return strconv.Itoa(ultimoIdRegistrado + 1)
 }
 
-func preencherNovaTarefaStruct(descricao string) *model.Tarefa {
-	id, err := strconv.Atoi(getProximoIdRegistro())
+func preencherNovaTarefaStruct(descricao string, arquivoDados *os.File) *model.Tarefa {
+	id, err := strconv.Atoi(getProximoIdRegistro(arquivoDados))
 	if(err != nil) {
 		log.Fatal("Falha ao converter o número doúltimo Id")
 	}
