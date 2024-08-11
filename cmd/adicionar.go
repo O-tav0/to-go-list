@@ -6,8 +6,9 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
+	"to-go-list/service"
+	"strings"
 )
 
 // adicionarCmd represents the adicionar command
@@ -16,7 +17,8 @@ var adicionarCmd = &cobra.Command{
 	Short: "Utilizado para adicionar uma tarefa à sua lista",
 	Long: ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("adicionar called")
+		service.AdicionarTarefa(strings.Join(args, " "));
+		fmt.Println("Tarefa Adicionada com sucesso!!!")
 	},
 }
 
@@ -33,3 +35,4 @@ func init() {
 	// is called directly, e.g.:
 	// adicionarCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
+
