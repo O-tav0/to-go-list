@@ -1,12 +1,11 @@
 package model
 
-import "time"
 
 type Tarefa struct {
 	Id int
 	Descricao string
 	EstaFinalizada bool
-	CriadaEm time.Time
+	CriadaEm string
 }
 
 func ConverterParaPortugues(statusTarefa bool) string {
