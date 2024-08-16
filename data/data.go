@@ -48,24 +48,31 @@ func CompletarTarefa(id string) {
 
 	todosOsRegistro, _ := csvReaderAntigo.ReadAll()
 
-	for i := 0; i < len(todosOsRegistro); i++ {
-		if todosOsRegistro[i][0] == id {
-			todosOsRegistro[i][2] = "Sim"
-		}
-	}
+	atualizaRegistroCsv(id, todosOsRegistro)
+	removeArquivoDadosAntigos(*arquivoCsvAntigo)
+	escreveNovoArquivoAtualizado(todosOsRegistro)
+}
 
-	arquivoCsvAntigo.Close()
-	e := os.Remove(caminho_arquivo_dados)
-	if e != nil {
-		log.Fatal(e)
-	}
-
+func escreveNovoArquivoAtualizado(todosOsRegistros [][]string) {
 	csvWriterNovo := csv.NewWriter(getArquivoCsv())
 
-	for i := 0; i < len(todosOsRegistro); i++ {
-		csvWriterNovo.Write(todosOsRegistro[i])
+	for i := 0; i < len(todosOsRegistros); i++ {
+		csvWriterNovo.Write(todosOsRegistros[i])
 	}
 	csvWriterNovo.Flush()
+}
+
+func removeArquivoDadosAntigos(arquivoCsvAntigo os.File ) {
+	arquivoCsvAntigo.Close()
+	os.Remove(caminho_arquivo_dados)
+}
+
+func atualizaRegistroCsv(idParaAtualizar string, todosOsRegistros [][]string) {
+	for i := 0; i < len(todosOsRegistros); i++ {
+		if todosOsRegistros[i][0] == idParaAtualizar {
+			todosOsRegistros[i][2] = "Sim"
+		}
+	}
 }
 
 func buscarRegistroPeloId(id string) []string {
