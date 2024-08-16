@@ -19,11 +19,13 @@ Você pode, opcionalmente, utilizar a flag -t para trazer todas as tarefas já c
  independentmente de estarem concluídas ou não.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		service.ListarTarefasPendentes()
+		cmd.Flags()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(listarCmd)
+	listarCmd.Flags().BoolP("todos", "t", true, "Permite visualização de todas as tarefas, pendentes ou não.")
 
 	// Here you will define your flags and configuration settings.
 
@@ -33,5 +35,4 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// listarCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
