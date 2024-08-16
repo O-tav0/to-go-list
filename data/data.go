@@ -26,6 +26,15 @@ func AdicionarNovaTarefaNoArquivo(novaTarefa *model.Tarefa) {
 	}
 }
 
+func DeletarRegistro(id string) {
+	arquivoCsv := getArquivoCsv()
+	csvReader := csv.NewReader(arquivoCsv)
+
+	todosOsRegistro, _ := csvReader.ReadAll()
+	deletarArquivoDadosAntigos(*arquivoCsv);
+	removeRegistroDoArquivo(todosOsRegistro, id)
+}
+
 func BuscarTarefas(isFiltrarTarefasPendentes bool) [][]string {
 	arquivoCsv := getArquivoCsv()
 	csvReader := csv.NewReader(arquivoCsv)
@@ -53,7 +62,7 @@ func CompletarTarefa(id string) {
 	todosOsRegistro, _ := csvReaderAntigo.ReadAll()
 
 	atualizaRegistroCsv(id, todosOsRegistro)
-	removeArquivoDadosAntigos(*arquivoCsvAntigo)
+	deletarArquivoDadosAntigos(*arquivoCsvAntigo)
 	escreveNovoArquivoAtualizado(todosOsRegistro)
 }
 
@@ -66,7 +75,19 @@ func escreveNovoArquivoAtualizado(todosOsRegistros [][]string) {
 	csvWriterNovo.Flush()
 }
 
-func removeArquivoDadosAntigos(arquivoCsvAntigo os.File ) {
+func removeRegistroDoArquivo(todosOsRegistros [][]string, idParaDeletar string) {
+	csvWriterNovo := csv.NewWriter(getArquivoCsv())
+
+	for i := 0; i < len(todosOsRegistros); i++ {
+		if(todosOsRegistros[i][0] == idParaDeletar) {
+			continue
+		}
+		csvWriterNovo.Write(todosOsRegistros[i])
+	}
+	csvWriterNovo.Flush()
+}
+
+func deletarArquivoDadosAntigos(arquivoCsvAntigo os.File ) {
 	arquivoCsvAntigo.Close()
 	os.Remove(caminho_arquivo_dados)
 }
@@ -77,25 +98,6 @@ func atualizaRegistroCsv(idParaAtualizar string, todosOsRegistros [][]string) {
 			todosOsRegistros[i][2] = "Sim"
 		}
 	}
-}
-
-func buscarRegistroPeloId(id string) []string {
-	arquivoCsv := getArquivoCsv()
-	csvReader := csv.NewReader(arquivoCsv)
-
-	todosOsRegistro, _ := csvReader.ReadAll()
-	var registroBuscado []string = nil
-
-	for i := 0; i < len(todosOsRegistro); i++ {
-		if todosOsRegistro[i][0] == id {
-			registroBuscado = todosOsRegistro[i]
-		}
-	}
-
-	if registroBuscado == nil {
-		log.Fatal("Não foi encontrado registro com o ID passado!")
-	}
-	return registroBuscado
 }
 
 func getArquivoCsv() *os.File {

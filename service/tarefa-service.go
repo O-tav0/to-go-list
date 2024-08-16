@@ -25,6 +25,10 @@ func ListarTarefas(isFiltrarTarefas bool) {
 	writer.Flush()
 }
 
+func DeletarTarefa(idParaDeletar string) {
+	data.DeletarRegistro(idParaDeletar)
+}
+
 func CompletarTarefa(id string) {
 	data.CompletarTarefa(id)
 }
