@@ -25,6 +25,10 @@ func ListarTarefasPendentes() {
 	writer.Flush()
 }
 
+func CompletarTarefa(id string) {
+	data.CompletarTarefa(id)
+}
+
 func getConfigTabWriter() *tabwriter.Writer {
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 0, ' ', tabwriter.AlignRight|tabwriter.Debug)
 	w.Write([]byte("\tID\tDescrição\tEstá Completa\tCriada Em\t\n"))

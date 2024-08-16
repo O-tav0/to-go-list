@@ -11,9 +11,8 @@ import (
 const caminho_arquivo_dados = "C:/GO/to-go-list/data/dados.csv"
 
 func AdicionarNovaTarefaNoArquivo(novaTarefa *model.Tarefa) {
-	arquivoCsv := getArquivoCsv();
+	arquivoCsv := getArquivoCsv()
 	csvWriter := csv.NewWriter(arquivoCsv)
-	
 
 	csvWriter.Write([]string{
 		strconv.Itoa(novaTarefa.Id),
@@ -22,26 +21,70 @@ func AdicionarNovaTarefaNoArquivo(novaTarefa *model.Tarefa) {
 		novaTarefa.CriadaEm,
 	})
 	csvWriter.Flush()
-
 	if err := csvWriter.Error(); err != nil {
 		log.Fatalf("Erro ao realizar o flush: %v", err)
 	}
-} 
+}
 
-func BuscarTarefasPendentes() [][]string{
-	arquivoCsv := getArquivoCsv();
+func BuscarTarefasPendentes() [][]string {
+	arquivoCsv := getArquivoCsv()
 	csvReader := csv.NewReader(arquivoCsv)
 
 	todosOsRegistro, _ := csvReader.ReadAll()
-	var registrosFiltrados [][]string;
+	var registrosFiltrados [][]string
 
 	for i := 0; i < len(todosOsRegistro); i++ {
-		if (todosOsRegistro[i][2] == "Não") {
+		if todosOsRegistro[i][2] == "Não" {
 			registrosFiltrados = append(registrosFiltrados, todosOsRegistro[i])
 		}
 	}
 
 	return registrosFiltrados
+}
+
+func CompletarTarefa(id string) {
+	arquivoCsvAntigo := getArquivoCsv()
+	csvReaderAntigo := csv.NewReader(arquivoCsvAntigo)
+
+	todosOsRegistro, _ := csvReaderAntigo.ReadAll()
+
+	for i := 0; i < len(todosOsRegistro); i++ {
+		if todosOsRegistro[i][0] == id {
+			todosOsRegistro[i][2] = "Sim"
+		}
+	}
+
+	arquivoCsvAntigo.Close()
+	e := os.Remove(caminho_arquivo_dados)
+	if e != nil {
+		log.Fatal(e)
+	}
+
+	csvWriterNovo := csv.NewWriter(getArquivoCsv())
+
+	for i := 0; i < len(todosOsRegistro); i++ {
+		csvWriterNovo.Write(todosOsRegistro[i])
+	}
+	csvWriterNovo.Flush()
+}
+
+func buscarRegistroPeloId(id string) []string {
+	arquivoCsv := getArquivoCsv()
+	csvReader := csv.NewReader(arquivoCsv)
+
+	todosOsRegistro, _ := csvReader.ReadAll()
+	var registroBuscado []string = nil
+
+	for i := 0; i < len(todosOsRegistro); i++ {
+		if todosOsRegistro[i][0] == id {
+			registroBuscado = todosOsRegistro[i]
+		}
+	}
+
+	if registroBuscado == nil {
+		log.Fatal("Não foi encontrado registro com o ID passado!")
+	}
+	return registroBuscado
 }
 
 func getArquivoCsv() *os.File {
