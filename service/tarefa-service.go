@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"text/tabwriter"
 	"time"
-	"to-go-list/model"
 	"to-go-list/data"
+	"to-go-list/model"
 )
 
 func AdicionarTarefa(descricao string) {
@@ -15,9 +15,9 @@ func AdicionarTarefa(descricao string) {
 	data.AdicionarNovaTarefaNoArquivo(novaTarefa)
 }
 
-func ListarTarefasPendentes() {
+func ListarTarefas(isFiltrarTarefas bool) {
 	writer := getConfigTabWriter();
-	registros := data.BuscarTarefasPendentes();
+	registros := data.BuscarTarefas(isFiltrarTarefas);
 
 	for i := 0; i < len(registros); i++ {
 		writer.Write(getLinhaOutput(registros[i]))

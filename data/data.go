@@ -26,20 +26,24 @@ func AdicionarNovaTarefaNoArquivo(novaTarefa *model.Tarefa) {
 	}
 }
 
-func BuscarTarefasPendentes() [][]string {
+func BuscarTarefas(isFiltrarTarefasPendentes bool) [][]string {
 	arquivoCsv := getArquivoCsv()
 	csvReader := csv.NewReader(arquivoCsv)
 
 	todosOsRegistro, _ := csvReader.ReadAll()
-	var registrosFiltrados [][]string
 
-	for i := 0; i < len(todosOsRegistro); i++ {
-		if todosOsRegistro[i][2] == "Não" {
-			registrosFiltrados = append(registrosFiltrados, todosOsRegistro[i])
+	if(isFiltrarTarefasPendentes) {
+		var registrosFiltrados [][]string
+
+		for i := 0; i < len(todosOsRegistro); i++ {
+			if todosOsRegistro[i][2] == "Não" {
+				registrosFiltrados = append(registrosFiltrados, todosOsRegistro[i])
+			}
 		}
+	
+		return registrosFiltrados
 	}
-
-	return registrosFiltrados
+	return todosOsRegistro;
 }
 
 func CompletarTarefa(id string) {

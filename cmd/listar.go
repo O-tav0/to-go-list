@@ -18,14 +18,17 @@ var listarCmd = &cobra.Command{
 Você pode, opcionalmente, utilizar a flag -t para trazer todas as tarefas já criadas,
  independentmente de estarem concluídas ou não.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		service.ListarTarefasPendentes()
-		cmd.Flags()
+		if(cmd.Flags().Changed("todos")) {
+			service.ListarTarefas(false);
+		} else {
+			service.ListarTarefas(true)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(listarCmd)
-	listarCmd.Flags().BoolP("todos", "t", true, "Permite visualização de todas as tarefas, pendentes ou não.")
+	listarCmd.Flags().BoolP("todos", "t",true,"Mostra todas as tarefas, independentemente do seu status.")
 
 	// Here you will define your flags and configuration settings.
 
